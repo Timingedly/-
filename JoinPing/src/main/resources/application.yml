@@ -1,0 +1,4 @@
+#当前启用环境
+spring:
+  profiles:
+    active: test

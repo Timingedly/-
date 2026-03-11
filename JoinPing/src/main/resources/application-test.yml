@@ -1,0 +1,101 @@
+#服务占用的端口号
+server:
+  port: 8080
+
+#spring相关配置
+spring:
+  application:
+    name: JoinPing
+  data:
+    redis:
+      host: 192.168.137.130
+      port: 6379
+      database: 0
+      password: 123456
+  datasource:
+    url: jdbc:mysql://localhost:3306/joinping?serverTimezone=GMT%2B8&characterEncoding=utf-8&useSSL=false
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  rabbitmq:
+    host: 192.168.137.130 # 虚拟机IP
+    port: 5672 # 端口
+    virtual-host: / # 虚拟主机
+    username: joinping # 用户名
+    password: 123456 # 密码
+    listener:
+      simple:
+        acknowledge-mode: manual #消费者确认机制（手动）
+      retry:
+        enabled: true # 开启消费者重试机制
+        initial-interval: 1000ms # 初识的失败等待时长为1秒
+        multiplier: 1 # 失败的等待时长倍数，下次等待时长 = multiplier * last-interval
+        max-attempts: 1 # 最大重试次数
+        stateless: true # 每次重试当成第一次一样
+  elasticsearch:
+    uris: http://192.168.137.130:9200
+  servlet:
+    multipart:
+      max-file-size: 3MB #上传文件配置
+      max-request-size: 3MB
+
+#mybatis-plus相关配置
+mybatis-plus:
+  mapper-locations: classpath:/mapper/*.xml #指定映射文件位置
+  type-aliases-package: com.example.joinping.entity #指定实体类所在包
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: false #关闭驼峰和下划线自动转换
+  global-config:
+    db-config:
+      logic-delete-field: status #指定逻辑删除字段
+      logic-not-delete-value: 0 #指定未逻辑删除的字段值
+      logic-delete-value: 1 #指定已逻辑删除的字段值
+
+#Ollama调用本地部署的大模型
+ollama:
+  url: http://127.0.0.1:11434/api/chat
+  model-name: deepseek-r1:1.5b
+
+#redis
+redis:
+  bloom-fliter:
+    address: redis://192.168.137.130:6379
+    fpp: 0.01
+
+#elasticsearch
+elasticsearch:
+  address: http://192.168.137.130:9200
+
+############## Sa-Token 配置 (文档: https://sa-token.cc) ##############
+sa-token:
+  # token 名称（同时也是 cookie 名称）
+  token-name: satoken
+  # token 有效期（单位：秒） 默认30天，-1 代表永久有效
+  timeout: 2592000
+  # token 最低活跃频率（单位：秒），如果 token 超过此时间没有访问系统就会被冻结，默认-1 代表不限制，永不冻结
+  active-timeout: -1
+  # 是否允许同一账号多地同时登录 （为 true 时允许一起登录, 为 false 时新登录挤掉旧登录）
+  is-concurrent: false
+  # 在多人登录同一账号时，是否共用一个 token （为 true 时所有登录共用一个 token, 为 false 时每次登录新建一个 token）
+  is-share: false
+  # token 风格（默认可取值：uuid、simple-uuid、random-32、random-64、random-128、tik）
+  token-style: uuid
+  # 是否输出操作日志
+  is-log: true
+
+#设置日志级别
+logging:
+  level:
+    com.example.joinping.utils: warn
+
+#项目规定的最大长度
+limit:
+  max:
+    length:
+      comment: 500
+      userName: 10
+      password: 20
+      topicName: 20
+      thingName: 15
+      topicContent: 200
