@@ -1,1 +1,1 @@
-JoinPing为后端项目，JoinPingWeb为前端项目
+JoinPing为项目后端，JoinPingWeb为项目前端（前端完全由trae生成）
